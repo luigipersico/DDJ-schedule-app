@@ -1,0 +1,126 @@
+{
+    "Antonia Frank": {
+        "AM": [
+            true,
+            true,
+            false,
+            false
+        ],
+        "PM": [
+            true,
+            true,
+            true,
+            true
+        ],
+        "active": false,
+        "historical_shifts": 0,
+        "active_months": 1,
+        "away_dates": []
+    },
+    "Kenneth Lee": {
+        "AM": [
+            true,
+            true,
+            true,
+            false
+        ],
+        "PM": [
+            false,
+            true,
+            true,
+            true
+        ]
+    },
+    "Martim Zurita": {
+        "AM": [
+            true,
+            true,
+            false,
+            true
+        ],
+        "PM": [
+            true,
+            true,
+            true,
+            true
+        ]
+    },
+    "Brenno De Lucca": {
+        "AM": [
+            true,
+            false,
+            true,
+            true
+        ],
+        "PM": [
+            true,
+            false,
+            true,
+            true
+        ]
+    },
+    "Jacob Mencke": {
+        "AM": [
+            true,
+            false,
+            false,
+            true
+        ],
+        "PM": [
+            true,
+            true,
+            true,
+            true
+        ]
+    },
+    "Erol Balkovic": {
+        "AM": [
+            false,
+            true,
+            true,
+            true
+        ],
+        "PM": [
+            true,
+            true,
+            true,
+            true
+        ]
+    },
+    "Alessandro Balestri": {
+        "AM": [
+            true,
+            true,
+            true,
+            true
+        ],
+        "PM": [
+            false,
+            true,
+            true,
+            true
+        ],
+        "active": false,
+        "historical_shifts": 0,
+        "active_months": 1,
+        "away_dates": []
+    },
+    "Luigi Persico": {
+        "AM": [
+            false,
+            true,
+            false,
+            true
+        ],
+        "PM": [
+            false,
+            true,
+            false,
+            true
+        ],
+        "active": true,
+        "historical_shifts": 20,
+        "active_months": 6,
+        "away_dates": []
+    }
+}
