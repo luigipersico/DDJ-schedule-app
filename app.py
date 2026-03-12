@@ -3,11 +3,10 @@ import json
 import datetime
 import requests
 
-# Define our working days
-DAYS = ["Tuesday", "Wednesday", "Thursday", "Friday"]
+# 1. NEW: Added Monday to the working days
+DAYS = ["Monday (just in case)", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
 # --- CLOUD DATABASE SETUP ---
-# Streamlit pulls these safely from the Secrets tab!
 BIN_ID = st.secrets["BIN_ID"]
 API_KEY = st.secrets["API_KEY"]
 JSONBIN_URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
@@ -29,26 +28,19 @@ def save_data(data):
 # --- Load the database ---
 db = load_data()
 
-# ... (Keep the rest of your web page and theme code exactly the same) ...
-
 # --- Build the Web Page ---
 st.title("SPC DDJ Monthly Availability Form")
 st.write("Please update your typical weekly availability. Uncheck the box if you are busy.")
 
-# --- NEW: DYNAMIC MONTHLY THEME (SWISS EDITION) ---
-import datetime
-
-# 1. Get the current month
+# --- DYNAMIC MONTHLY THEME (SWISS EDITION) ---
 current_month = datetime.datetime.now().month
 
-# 2. Define a fun, seasonal emoji for each month
 monthly_emojis = {
     1: "❄️", 2: "🏔️", 3: "🌱", 4: "🥚", 5: "🌷", 6: "☀️",
     7: "🐄", 8: "🇨🇭", 9: "🍇", 10: "🍂", 11: "🫕", 12: "🎄"
 }
 current_emoji = monthly_emojis.get(current_month, "📅")
 
-# 3. Inject the emoji as a faint background pattern
 st.markdown(
     f"""
     <style>
@@ -65,7 +57,6 @@ st.markdown(
 phd_names = list(db.keys())
 phd_names.sort()
 
-# NEW: Build the list with "Add me" right at the top!
 phd_names.insert(0, "--- Select your name ---")
 phd_names.insert(1, "I am a NEW PhD (Add me)") 
 
@@ -74,11 +65,12 @@ selected_name = st.selectbox("Who are you?", phd_names)
 # 2. Handle the "New PhD" case
 if selected_name == "I am a NEW PhD (Add me)":
     current_user = st.text_input("Enter your Full Name (and press Enter):", key="new_user_input")
-    current_schedule = {"AM": [True, True, True, True], "PM": [True, True, True, True]}
+    # Updated default to 5 days
+    current_schedule = {"AM": [True, True, True, True, True], "PM": [True, True, True, True, True]}
     
     if current_user == "":
         st.info("☝️ Please type your name in the box above and press **Enter** to reveal the schedule.")
-        st.stop() # Pauses the app until they type something
+        st.stop()
 
 # 3. Handle existing PhDs
 elif selected_name != "--- Select your name ---":
@@ -87,7 +79,7 @@ elif selected_name != "--- Select your name ---":
 
 else:
     current_user = None
-    st.stop() # Pauses the app on the blank dropdown screen
+    st.stop() 
 
 # 4. Display the Checkboxes (The actual form)
 if current_user:
@@ -95,43 +87,14 @@ if current_user:
     st.markdown(f"### Update Profile: **{current_user}**")
     
     updated_schedule = {"AM": [], "PM": []}
-    
-# Active Toggle and History Preservation
-    is_active = st.checkbox("🟢 Active in DDJ rotation this semester?", value=current_schedule.get("active", True))
-    updated_schedule["active"] = is_active
-    
-    # --- SECURE ADMIN ZONE ---
-    st.markdown("---")
-    with st.expander("🛠️ Admin: Manual Shift Override"):
-        st.info("Admin only: Adjust shift counts if TCV breaks down or shifts are cancelled.")
-        
-        # 1. The Password Field
-        admin_pass = st.text_input("Admin Password:", type="password", key="admin_pw")
-        
-        # 2. Check the password (you can change "plasma2026" to anything you want!)
-        if admin_pass == "plasma2026":
-            st.success("Admin access granted.")
-            
-            # Now the admin can see and safely edit the absolute numbers
-            updated_schedule["historical_shifts"] = st.number_input(
-                "Total Completed Shifts:", 
-                value=current_schedule.get("historical_shifts", 0), 
-                step=1
-            )
-            
-            updated_schedule["active_months"] = st.number_input(
-                "Total Active Months:", 
-                value=current_schedule.get("active_months", 1), 
-                step=1
-            )
-        else:
-            # 3. IF NO PASSWORD: We silently pass their exact current numbers through so they stay safe!
-            if admin_pass != "":
-                st.error("Incorrect password.")
-                
-            updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
-            updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
-    # -------------------------
+
+    # --- DATA MIGRATION SAFETY NET ---
+    # If they are an existing user with only 4 days, add Monday to the front!
+    if len(current_schedule.get("AM", [])) == 4:
+        current_schedule["AM"].insert(0, True)
+        current_schedule["PM"].insert(0, True)
+    # ---------------------------------
+
     st.markdown("#### Typical Weekly Availability")
     col1, col2 = st.columns(2)
     
@@ -174,6 +137,51 @@ if current_user:
     new_date_range = st.date_input("Select Date(s):", value=[], key="new_dates")
     new_reason = st.selectbox("Reason:", ["Conference", "Holiday", "Course/Teaching", "Other"], key="new_reason")
 
+    # --- SECURE ADMIN ZONE (Moved to bottom!) ---
+    st.markdown("---")
+    with st.expander("🛠️ Admin Zone: Overrides, Active Status & Danger Zone"):
+        st.info("Admin only: Toggle active status, adjust shift counts, or permanently delete profiles.")
+        
+        admin_pass = st.text_input("Admin Password:", type="password", key="admin_pw")
+        
+        if admin_pass == "ddjninja":
+            st.success("Admin access granted.")
+            
+            # Active Toggle
+            updated_schedule["active"] = st.checkbox("🟢 Active in DDJ rotation this semester?", value=current_schedule.get("active", True))
+            
+            # Shift Counters
+            updated_schedule["historical_shifts"] = st.number_input(
+                "Total Completed Shifts:", 
+                value=current_schedule.get("historical_shifts", 0), 
+                step=1
+            )
+            updated_schedule["active_months"] = st.number_input(
+                "Total Active Months:", 
+                value=current_schedule.get("active_months", 1), 
+                step=1
+            )
+
+            # Danger Zone
+            st.markdown("#### Danger Zone")
+            confirm_delete = st.checkbox(f"I confirm I want to permanently delete {current_user}.")
+            
+            if confirm_delete:
+                if st.button("🗑️ Permanently Delete Profile"):
+                    del db[current_user]
+                    save_data(db) 
+                    st.success("Profile deleted. Reloading page...")
+                    st.rerun()
+        else:
+            if admin_pass != "":
+                st.error("Incorrect password.")
+            
+            # Pass existing variables through safely if no password
+            updated_schedule["active"] = current_schedule.get("active", True)
+            updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
+            updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
+    # -------------------------
+
     # 5. Save Button
     if st.button("💾 Save My Availability"):
         if new_date_range: 
@@ -190,24 +198,9 @@ if current_user:
                 "reason": new_reason
             }
             updated_schedule["away_dates"].append(new_entry)   
+            
         db[current_user] = updated_schedule
-        save_data(db) # <-- NEW: Saves to the cloud!
+        save_data(db) 
         
         st.success(f"Availability for {current_user} has been successfully updated!")
         st.rerun()
-
-    # --- NEW: THE DANGER ZONE (Delete Profile) ---
-    st.markdown("---")
-    with st.expander("🚨 Danger Zone: Delete Profile"):
-        st.warning("⚠️ **Warning:** This will permanently erase your profile, typical week, and all shift history. Only do this if you have graduated or left the SPC.")
-        
-        # They must check this box to reveal the delete button
-        confirm_delete = st.checkbox(f"I confirm I want to permanently delete {current_user}.")
-        
-        if confirm_delete:
-            if st.button("🗑️ Permanently Delete Profile"):
-                del db[current_user]
-                save_data(db) # <-- NEW: Saves to the cloud!
-                
-                st.success("Profile deleted. Reloading page...")
-                st.rerun()
