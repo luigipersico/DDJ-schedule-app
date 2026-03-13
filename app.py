@@ -144,7 +144,7 @@ if current_user:
         
         admin_pass = st.text_input("Admin Password:", type="password", key="admin_pw")
         
-        if admin_pass == "ddjninja":
+        if admin_pass == "ForzaNapoli":
             st.success("Admin access granted.")
             
             # Active Toggle
