@@ -205,16 +205,25 @@ with tab1:
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
 
+    # 5. Save Button with Validation!
     if st.button("💾 Save My Availability"):
-        if new_date_range: 
-            start_date = str(new_date_range[0])
-            end_date = str(new_date_range[1] if len(new_date_range) > 1 else new_date_range[0])
-            updated_schedule["away_dates"].append({"start": start_date, "end": end_date, "reason": new_reason})   
-            
-        db[current_user] = updated_schedule
-        save_data(db) 
-        st.success("Successfully updated!")
-        st.rerun()
+        # --- NEW: LAZINESS CHECKER ---
+        # Count how many True values there are from Tuesday (index 1) to Friday
+        available_slots = sum(updated_schedule["AM"][1:]) + sum(updated_schedule["PM"][1:])
+        
+        if available_slots < 2:
+            st.error("🤨 I find it very hard to believe you are free less than twice a week. Please select at least two slots between Tuesday and Friday, or talk to the Dojo Master!")
+        else:
+            # If they passed the test, save the data normally!
+            if new_date_range: 
+                start_date = str(new_date_range[0])
+                end_date = str(new_date_range[1] if len(new_date_range) > 1 else new_date_range[0])
+                updated_schedule["away_dates"].append({"start": start_date, "end": end_date, "reason": new_reason})   
+                
+            db[current_user] = updated_schedule
+            save_data(db) 
+            st.success("Successfully updated!")
+            st.rerun()
 
     st.markdown("---")
     st.markdown("#### Tired of shifts?")
