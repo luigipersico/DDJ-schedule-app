@@ -212,7 +212,7 @@ with tab1:
         available_slots = sum(updated_schedule["AM"][1:]) + sum(updated_schedule["PM"][1:])
         
         if available_slots < 2:
-            st.error("🤨 I find it very hard to believe you are free less than twice a week. Please select at least two slots between Tuesday and Friday, or talk to the Dojo Master!")
+            st.error("🤨 I find it very hard to believe you are free less than twice a week. Please select at least two slots between Tuesday and Friday, or talk to a DDJ Ninja!")
         else:
             # If they passed the test, save the data normally!
             if new_date_range: 
