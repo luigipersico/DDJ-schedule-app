@@ -9,3 +9,5 @@
 
 # Ignore Mac system files
 /.DS_Store
+
+.streamlit/secrets.toml
