@@ -68,6 +68,7 @@ else:
     st.stop()
 
 # --- THE SIDEBAR (Stats + New Visual Calendar) ---
+# --- THE SIDEBAR ---
 if current_user and current_user != "I am a NEW PhD (Add me)":
     with st.sidebar:
         st.header(f"📊 {current_user.split()[0]}'s Profile")
@@ -76,9 +77,35 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
         shifts = current_schedule.get("historical_shifts", 0)
         months = current_schedule.get("active_months", 1)
         ratio = shifts / months if months > 0 else 0
-
+        
         st.metric("Total Completed Shifts (since 04/2026)", shifts)
         st.metric("Fairness Ratio", f"{ratio:.2f}")
+        
+        # --- NEW: STATUS & AWAY DATES ---
+        st.divider()
+        
+        # 1. Active Status Check
+        is_active = current_schedule.get("active", True)
+        if is_active:
+            st.success("🟢 **Status:** Active in rotation")
+        else:
+            st.error("🔴 **Status:** Inactive (Excluded from shifts)")
+            
+        # 2. Upcoming Absences Check
+        away_dates = current_schedule.get("away_dates", [])
+        st.markdown("#### ✈️ Upcoming Absences")
+        if away_dates:
+            for away in away_dates:
+                reason = away.get("reason", "Away")
+                if away['start'] == away['end']:
+                    st.write(f"• **{away['start']}** ({reason})")
+                else:
+                    st.write(f"• **{away['start']}** to **{away['end']}** ({reason})")
+        else:
+            st.caption("*(No away dates scheduled)*")
+            
+        # --- VISUAL CALENDAR ---
+        # (Keep the rest of your visual calendar code exactly as it is below this point!)
         
         # --- NEW: VISUAL CALENDAR ---
         published = config.get("PUBLISHED_SCHEDULE", [])
@@ -236,7 +263,7 @@ with tab1:
         
         If you take on a **6-month DDJ Project**, you are officially excused from the standard shift rotation during that time. 
         
-        👉 [Click here to find more info on available DDJ Projects!](https://insert-your-epfl-intranet-link-here.ch)
+        👉 [Click here to find more info on available DDJ Projects!](https://spcwiki.epfl.ch/wiki/DDJ/DDJ_Projects)
         """)
         st.balloons() # Streamlit will literally drop animated balloons on their screen!
 
