@@ -1,2 +1,11 @@
-/DDJ_schedule_maker.py
+# Ignore the master scheduler and its secret keys
 /scheduler.py
+
+# Ignore local database backups
+/backup_db_*.json
+
+# Ignore the generated email preview
+/email_table_draft.html
+
+# Ignore Mac system files
+/.DS_Store
