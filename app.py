@@ -160,7 +160,7 @@ with tab1:
 
     # --- ADMIN ZONE ---
     st.markdown("---")
-    with st.expander("🛠️ Admin Zone"):
+    with st.expander("🛠️ Admin Dojo"):
         admin_pass = st.text_input("Admin Password:", type="password")
         
         if admin_pass == "ForzaNapoli":
@@ -200,7 +200,7 @@ with tab1:
                     st.rerun()
         else:
             if admin_pass != "":
-                st.error("🥷 Access Denied. A true DDJ Ninja knows exactly what sound the TCV makes right before a disruption. Try again.")
+                st.error("🥷 Nice try, Padawan. The Admin Dojo is sealed to outsiders. Seek the true password or return to your shifts.")
             updated_schedule["active"] = current_schedule.get("active", True)
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
@@ -215,6 +215,21 @@ with tab1:
         save_data(db) 
         st.success("Successfully updated!")
         st.rerun()
+
+    st.markdown("---")
+    st.markdown("#### Tired of shifts?")
+    
+    # We use a slightly different button style for emphasis
+    if st.button("🚫 I don't want to do DDJ shifts anymore"):
+        st.warning("### You wish... 😏")
+        st.success("""
+        ...But wait, you actually can! 🎉
+        
+        If you take on a **6-month DDJ Project**, you are officially excused from the standard shift rotation during that time. 
+        
+        👉 [Click here to find more info on available DDJ Projects!](https://insert-your-epfl-intranet-link-here.ch)
+        """)
+        st.balloons() # Streamlit will literally drop animated balloons on their screen!
 
 # --- NEW: HISTORY DASHBOARD TAB ---
 with tab2:
