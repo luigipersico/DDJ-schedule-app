@@ -161,29 +161,45 @@ with tab1:
             updated_schedule["PM"].append(is_free)
             
     # --- AUTO-CLEANUP AWAY DATES ---
+    # --- AUTO-CLEANUP AWAY DATES ---
     st.markdown("---")
     st.markdown("#### Specific Away Dates (Conferences, Holidays, etc.)")
     existing_away_dates = current_schedule.get("away_dates", [])
     dates_to_keep = []
-    
-    # NEW logic: Drop any dates that happened before today!
+
     today = datetime.date.today()
+    
     if existing_away_dates:
+        st.write("Uncheck a box to delete that away period:")
         for i, away_period in enumerate(existing_away_dates):
+            # Safely check if the date is in the past
+            is_past = False
             try:
                 end_date = datetime.date.fromisoformat(away_period['end'])
-                if end_date >= today:
-                    label = f"{away_period['start']} to {away_period['end']} ({away_period['reason']})" if away_period['start'] != away_period['end'] else f"{away_period['start']} ({away_period['reason']})"
-                    if st.checkbox(label, value=True, key=f"keep_{i}"):
-                        dates_to_keep.append(away_period)
+                if end_date < today:
+                    is_past = True
             except:
-                # If they manually typed a broken date somehow, just keep it to be safe.
-                dates_to_keep.append(away_period)
+                pass # If parsing fails, assume it's valid so we don't accidentally delete it
                 
+            # If it's NOT in the past, draw the checkbox!
+            if not is_past:
+                reason = away_period.get('reason', 'Away')
+                if away_period['start'] == away_period['end']:
+                    label = f"🗓️ {away_period['start']} ({reason})"
+                else:
+                    label = f"🗓️ {away_period['start']} to {away_period['end']} ({reason})"
+                    
+                # The checkbox defaults to True. If they uncheck it, it gets removed.
+                if st.checkbox(label, value=True, key=f"keep_{i}_{away_period['start']}"):
+                    dates_to_keep.append(away_period)
+    else:
+        st.caption("*(No upcoming away dates scheduled)*")
+        
     updated_schedule["away_dates"] = dates_to_keep
     
-    new_date_range = st.date_input("Add new away period:", value=[], key="new_dates")
-    new_reason = st.selectbox("Reason:", ["Conference", "Holiday", "Course/Teaching", "Other"])
+    st.markdown("**Add a new away period:**")
+    new_date_range = st.date_input("Select dates:", value=[], key="new_dates")
+    new_reason = st.selectbox("Reason:", ["Conference", "Holiday", "Course/Teaching", "Other"], key="new_reason")
 
     # --- ADMIN ZONE ---
     st.markdown("---")
