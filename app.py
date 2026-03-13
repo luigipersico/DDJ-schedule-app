@@ -94,8 +94,12 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
             
             for day in published:
                 bg_color = "border-bottom: 1px solid #ddd;"
-                if day["Type"] == "TCV_OFF": bg_color = "background-color: #ffcccc; color: #990000; border-bottom: 1px solid #ddd;"
-                elif day["Type"] == "HOLIDAY": bg_color = "background-color: #cce5ff; color: #004085; border-bottom: 1px solid #ddd;"
+                
+                # --- THE FIX: Use .get() to default to NORMAL if "Type" is missing ---
+                day_type = day.get("Type", "NORMAL") 
+                
+                if day_type == "TCV_OFF": bg_color = "background-color: #ffcccc; color: #990000; border-bottom: 1px solid #ddd;"
+                elif day_type == "HOLIDAY": bg_color = "background-color: #cce5ff; color: #004085; border-bottom: 1px solid #ddd;"
                 
                 # Check if the user is assigned this shift
                 am_style = "background-color: #ffd700; color: black; font-weight: bold; font-size: 15px;" if user_initials != "" and user_initials == day["AM"] else ""
