@@ -76,9 +76,8 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
         shifts = current_schedule.get("historical_shifts", 0)
         months = current_schedule.get("active_months", 1)
         ratio = shifts / months if months > 0 else 0
-        
-        st.metric("Total Completed Shifts", shifts)
-        st.metric("Active Months in SPC", months)
+
+        st.metric("Total Completed Shifts (since 04/2026)", shifts)
         st.metric("Fairness Ratio", f"{ratio:.2f}")
         
         # --- NEW: VISUAL CALENDAR ---
@@ -111,7 +110,7 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
             st.markdown(html, unsafe_allow_html=True)
 
 # --- THE TABS ---
-tab1, tab2 = st.tabs(["📝 My Availability", "📅 Lab Dashboard"])
+tab1, tab2 = st.tabs(["📝 My Availability", "📅 DDJ Historical Dashboard"])
 
 with tab1:
     st.markdown(f"### Update Profile: **{current_user}**")
@@ -164,7 +163,7 @@ with tab1:
     with st.expander("🛠️ Admin Zone"):
         admin_pass = st.text_input("Admin Password:", type="password")
         
-        if admin_pass == "ddjninja":
+        if admin_pass == "ForzaNapoli":
             st.success("Admin access granted.")
             updated_schedule["active"] = st.checkbox("🟢 Active in rotation?", value=current_schedule.get("active", True))
             updated_schedule["historical_shifts"] = st.number_input("Total Shifts:", value=current_schedule.get("historical_shifts", 0), step=1)
@@ -200,6 +199,8 @@ with tab1:
                     save_data(db) 
                     st.rerun()
         else:
+            if admin_pass != "":
+                st.error("🥷 Access Denied. A true DDJ Ninja knows exactly what sound the TCV makes right before a disruption. Try again.")
             updated_schedule["active"] = current_schedule.get("active", True)
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
