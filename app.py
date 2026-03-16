@@ -206,7 +206,7 @@ with tab1:
     with st.expander("🛠️ Admin Dojo"):
         admin_pass = st.text_input("Admin Password:", type="password")
         
-        if admin_pass == "ForzaNapoli":
+        if admin_pass == st.secrets["ADMIN_PASSWORD"]:
             st.success("Admin access granted.")
             updated_schedule["active"] = st.checkbox("🟢 Active in rotation?", value=current_schedule.get("active", True))
             updated_schedule["historical_shifts"] = st.number_input("Total Shifts:", value=current_schedule.get("historical_shifts", 0), step=1)
