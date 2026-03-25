@@ -10,20 +10,32 @@ API_KEY = st.secrets["API_KEY"]
 JSONBIN_URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
 
 def get_initials(name):
+    # 1. Handle the unfilled edge case (Important for the scheduler!)
+    if name == "⚠️ UNFILLED - NO ONE FREE": 
+        return "---"
+        
+    # 2. Manual Overrides
     custom_initials = {
-        "Martino Bonisolli": "MBO",        
-        "Garance Durr-Legoupil-Nicoud": "GDL"   
+        "Martino Bonisolli": "MBO",         
     }
     
     if name in custom_initials:
         return custom_initials[name]
         
-    # --- (Keep your existing logic below this point) ---
+    # 3. Standard Logic
     parts = name.split()
-    if len(parts) >= 2:
-        first = parts[0][0].upper()
-        last_name = parts[-1]
-        return f"{first}{last_name[0].upper()}{last_name[-1].upper()}"
+    
+    # If they have a first name and two surnames (3 or more words)
+    if len(parts) >= 3:
+        return (parts[0][0] + parts[1][0] + parts[2][0]).upper()
+        
+    # If they have a first name and one surname (2 words)
+    elif len(parts) == 2:
+        first = parts[0][0]
+        last_name = parts[1]
+        return (first + last_name[0] + last_name[-1]).upper()
+        
+    # Fallback for single-word names
     return name[:3].upper()
 
 def load_data():
