@@ -9,16 +9,22 @@ BIN_ID = st.secrets["BIN_ID"]
 API_KEY = st.secrets["API_KEY"]
 JSONBIN_URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
 
-# --- HELPER: GET INITIALS FOR HIGHLIGHTING ---
-def get_initials(full_name):
-    if not full_name or full_name == "I am a NEW PhD (Add me)":
-        return ""
-    parts = full_name.split()
-    if not parts: return ""
-    first_name_letter = parts[0][0]
-    first_surname_letter = parts[1][0] if len(parts) > 1 else parts[0][1] if len(parts[0])>1 else ""
-    last_surname_letter = full_name[-1]
-    return (first_name_letter + first_surname_letter + last_surname_letter).upper()
+def get_initials(name):
+    custom_initials = {
+        "Martino Bonisolli": "MBO",        
+        "Garance Durr-Legoupil-Nicoud": "GDL"   
+    }
+    
+    if name in custom_initials:
+        return custom_initials[name]
+        
+    # --- (Keep your existing logic below this point) ---
+    parts = name.split()
+    if len(parts) >= 2:
+        first = parts[0][0].upper()
+        last_name = parts[-1]
+        return f"{first}{last_name[0].upper()}{last_name[-1].upper()}"
+    return name[:3].upper()
 
 def load_data():
     headers = {"X-Master-Key": API_KEY}
@@ -53,7 +59,18 @@ phd_names.sort()
 phd_names.insert(0, "--- Select your name ---")
 phd_names.insert(1, "I am a NEW PhD (Add me)") 
 
-selected_name = st.selectbox("Who are you?", phd_names)
+# --- NEW: Helper function to format the dropdown names ---
+def format_dropdown(name):
+    if name in ["--- Select your name ---", "I am a NEW PhD (Add me)"]:
+        return name
+    return f"{name} ({get_initials(name)})"
+
+# --- UPDATED SELECTBOX ---
+selected_name = st.selectbox(
+    "Who are you?", 
+    phd_names,
+    format_func=format_dropdown
+)
 
 if selected_name == "I am a NEW PhD (Add me)":
     current_user = st.text_input("Enter your Full Name (and press Enter):")
@@ -71,7 +88,7 @@ else:
 # --- THE SIDEBAR ---
 if current_user and current_user != "I am a NEW PhD (Add me)":
     with st.sidebar:
-        st.header(f"📊 {current_user.split()[0]}'s Profile")
+        st.header(f"📊 {current_user.split()[0]} ({get_initials(current_user)})'s Profile")
         st.divider()
         
         shifts = current_schedule.get("historical_shifts", 0)
