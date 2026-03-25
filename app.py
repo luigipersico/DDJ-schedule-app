@@ -16,7 +16,8 @@ def get_initials(name):
         
     # 2. Manual Overrides
     custom_initials = {
-        "Martino Bonisolli": "MBO",         
+        "Martino Bonisolli": "MBO",        
+        "Garance Durr-Legoupil-Nicoud": "GDL"   
     }
     
     if name in custom_initials:
