@@ -1,0 +1,31 @@
+name: Send Daily DDJ Reminders
+
+on:
+  schedule:
+    # Runs at 08:00 UTC every day (which is 10:00 CEST in Switzerland)
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allows you to click a "Run Now" button to test it
+
+jobs:
+  run-reminder-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run Reminder Script
+        env:
+          BIN_ID: ${{ secrets.BIN_ID }}
+          API_KEY: ${{ secrets.API_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        run: python reminder.py

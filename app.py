@@ -18,7 +18,7 @@ def get_initials(name):
     custom_initials = {
         "Martino Bonisolli": "MBO",        
         "Garance Durr-Legoupil-Nicoud": "GDL",
-        "Segio García Herreros": "SGS",
+        "Sergio García Herreros": "SGS",
         "Guillaume Van Parys": "GVS",
         "Michele Bottino": "MBT",   
     }
