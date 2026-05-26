@@ -44,17 +44,28 @@ def get_initials(name):
 
 def load_data():
     headers = {"X-Master-Key": API_KEY}
-    response = requests.get(JSONBIN_URL, headers=headers)
-    if response.status_code == 200:
-        data = response.json().get("record", {})
-        if "__CONFIG__" not in data:
-            data["__CONFIG__"] = {"TCV_OFF_RANGES": [], "PUBLISHED_SCHEDULE": [], "HISTORY": {}}
-        return data
+    try:
+        # --- NEW: timeout=5 forces the app to give up if JSONBin is frozen ---
+        response = requests.get(JSONBIN_URL, headers=headers, timeout=5)
+        if response.status_code == 200:
+            data = response.json().get("record", {})
+            if "__CONFIG__" not in data:
+                data["__CONFIG__"] = {"TCV_OFF_RANGES": [], "PUBLISHED_SCHEDULE": [], "HISTORY": {}}
+            return data
+    except requests.exceptions.RequestException:
+        # --- NEW: If JSONBin times out or crashes, show this instead of a 504 ---
+        st.error("🚨 **CRITICAL DATABASE ERROR** 🚨\n\nThe central database is currently offline or unresponsive. Please try again later. Do not attempt to save new shifts right now.")
+        st.stop() # Immediately halts the app so it doesn't try to load blank profiles
+    
     return {}
 
 def save_data(data):
     headers = {"Content-Type": "application/json", "X-Master-Key": API_KEY}
-    requests.put(JSONBIN_URL, json=data, headers=headers)
+    try:
+        # --- NEW: Protect the save function from hanging too ---
+        requests.put(JSONBIN_URL, json=data, headers=headers, timeout=5)
+    except requests.exceptions.RequestException:
+        st.error("🚨 ERROR: The database is offline. Your changes were NOT saved!")
 
 db = load_data()
 config = db.get("__CONFIG__", {"TCV_OFF_RANGES": [], "PUBLISHED_SCHEDULE": [], "HISTORY": {}})
