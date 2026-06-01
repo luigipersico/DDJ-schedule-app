@@ -292,21 +292,24 @@ with tab1:
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
 
-# --- UPGRADED SAVE BUTTON ---
-    st.markdown("<br>", unsafe_allow_html=True) # Adds a little breathing room above the button
-    
-    # Injecting CSS specifically for the "primary" type button
+# --- UPGRADED FLOATING SAVE BUTTON ---
     st.markdown(
         """
         <style>
         div.stButton > button[kind="primary"] {
-            background-color: #28a745; /* Bright Green */
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 260px;
+            background-color: #28a745; 
             color: white;
-            font-size: 22px !important;
+            font-size: 18px !important;
             height: 3em;
             border-radius: 8px;
             border: 2px solid #1e7e34;
             font-weight: bold;
+            z-index: 99999; /* Forces the button to stay on top of everything */
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.3); /* Adds a drop shadow so it looks like it's floating */
         }
         div.stButton > button[kind="primary"]:hover {
             background-color: #218838;
@@ -319,8 +322,8 @@ with tab1:
     )
 
     # 5. Save Button with Validation!
-    # By setting type="primary" and use_container_width=True, it applies the CSS above and stretches it across the screen.
-    if st.button("💾 SAVE MY AVAILABILITY", type="primary", use_container_width=True):
+    # Removed use_container_width=True so it doesn't stretch across the entire screen
+    if st.button("💾 SAVE MY AVAILABILITY", type="primary"):
         # --- NEW: LAZINESS CHECKER ---
         # Count how many True values there are from Tuesday (index 1) to Friday
         available_slots = sum(updated_schedule["AM"][1:]) + sum(updated_schedule["PM"][1:])
