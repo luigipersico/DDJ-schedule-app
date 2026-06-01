@@ -292,8 +292,35 @@ with tab1:
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
 
+# --- UPGRADED SAVE BUTTON ---
+    st.markdown("<br>", unsafe_allow_html=True) # Adds a little breathing room above the button
+    
+    # Injecting CSS specifically for the "primary" type button
+    st.markdown(
+        """
+        <style>
+        div.stButton > button[kind="primary"] {
+            background-color: #28a745; /* Bright Green */
+            color: white;
+            font-size: 22px !important;
+            height: 3em;
+            border-radius: 8px;
+            border: 2px solid #1e7e34;
+            font-weight: bold;
+        }
+        div.stButton > button[kind="primary"]:hover {
+            background-color: #218838;
+            color: white;
+            border-color: #1e7e34;
+        }
+        </style>
+        """, 
+        unsafe_allow_html=True
+    )
+
     # 5. Save Button with Validation!
-    if st.button("💾 Save My Availability"):
+    # By setting type="primary" and use_container_width=True, it applies the CSS above and stretches it across the screen.
+    if st.button("💾 SAVE MY AVAILABILITY", type="primary", use_container_width=True):
         # --- NEW: LAZINESS CHECKER ---
         # Count how many True values there are from Tuesday (index 1) to Friday
         available_slots = sum(updated_schedule["AM"][1:]) + sum(updated_schedule["PM"][1:])
