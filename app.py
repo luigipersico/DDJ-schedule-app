@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import datetime
 import requests
+import urllib.parse
 
 DAYS = ["Monday (just in case)", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
@@ -10,8 +11,7 @@ API_KEY = st.secrets["API_KEY"]
 JSONBIN_URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
 
 def get_initials(name):
-    if name == "⚠️ UNFILLED - NO ONE FREE": 
-        return "---"
+    if name == "⚠️ UNFILLED - NO ONE FREE": return "---"
     custom_initials = {
         "Martino Bonisolli": "MBO",        
         "Garance Durr-Legoupil-Nicoud": "GDL",
@@ -19,15 +19,10 @@ def get_initials(name):
         "Guillaume Van Parys": "GVS",
         "Michele Bottino": "MBT",   
     }
-    if name in custom_initials:
-        return custom_initials[name]
+    if name in custom_initials: return custom_initials[name]
     parts = name.split()
-    if len(parts) >= 3:
-        return (parts[0][0] + parts[1][0] + parts[2][0]).upper()
-    elif len(parts) == 2:
-        first = parts[0][0]
-        last_name = parts[1]
-        return (first + last_name[0] + last_name[-1]).upper()
+    if len(parts) >= 3: return (parts[0][0] + parts[1][0] + parts[2][0]).upper()
+    elif len(parts) == 2: return (parts[0][0] + parts[1][0] + parts[-1][-1]).upper()
     return name[:3].upper()
 
 def load_data():
@@ -42,7 +37,7 @@ def load_data():
                 data["__TOURS__"] = []
             return data
     except requests.exceptions.RequestException:
-        st.error("🚨 **CRITICAL DATABASE ERROR** 🚨\n\nThe central database is currently offline or unresponsive. Please try again later.")
+        st.error("🚨 **CRITICAL DATABASE ERROR** 🚨\n\nThe central database is currently offline. Please try again later.")
         st.stop()
     return {}
 
@@ -56,6 +51,28 @@ def save_data(data):
 db = load_data()
 config = db.get("__CONFIG__", {"TCV_OFF_RANGES": [], "PUBLISHED_SCHEDULE": [], "HISTORY": {}})
 tours_db = db.get("__TOURS__", [])
+
+# --- NEW: SILENT AUTO-COUNTER FOR PAST TOURS ---
+today = datetime.date.today()
+needs_save = False
+for tour in tours_db:
+    try:
+        tour_date = datetime.date.fromisoformat(tour["date"])
+        # If the tour date is in the past and hasn't been counted yet
+        if tour_date < today and not tour.get("counted", False):
+            # Only credit guides who were officially approved
+            for guide in tour.get("approved_guides", []):
+                if guide in db:
+                    db[guide]["historical_tours"] = db[guide].get("historical_tours", 0) + 1
+                    # 2-to-1 Conversion Rule
+                    if db[guide]["historical_tours"] % 2 == 0:
+                        db[guide]["historical_shifts"] = db[guide].get("historical_shifts", 0) + 1
+            tour["counted"] = True
+            needs_save = True
+    except ValueError:
+        pass
+if needs_save:
+    save_data(db)
 
 st.set_page_config(page_title="DDJ Schedule", page_icon="🇨🇭", layout="centered")
 
@@ -74,21 +91,15 @@ phd_names.insert(0, "--- Select your name ---")
 phd_names.insert(1, "I am a NEW PhD (Add me)") 
 
 def format_dropdown(name):
-    if name in ["--- Select your name ---", "I am a NEW PhD (Add me)"]:
-        return name
+    if name in ["--- Select your name ---", "I am a NEW PhD (Add me)"]: return name
     return f"{name} ({get_initials(name)})"
 
-selected_name = st.selectbox(
-    "Who are you?", 
-    phd_names,
-    format_func=format_dropdown
-)
+selected_name = st.selectbox("Who are you?", phd_names, format_func=format_dropdown)
 
 if selected_name == "I am a NEW PhD (Add me)":
     current_user = st.text_input("Enter your Full Name (and press Enter):")
     current_schedule = {"AM": [True]*5, "PM": [True]*5, "historical_tours": 0}
-    if not current_user:
-        st.stop()
+    if not current_user: st.stop()
 elif selected_name != "--- Select your name ---":
     current_user = selected_name
     current_schedule = db[current_user]
@@ -106,39 +117,32 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
         months = current_schedule.get("active_months", 1)
         ratio = shifts / months if months > 0 else 0
         
-        st.metric("Total Completed Shifts (since 04/2026)", shifts)
+        st.metric("Completed Shifts", shifts)
         st.metric("Fairness Ratio", f"{ratio:.2f}")
         
-        # --- NEW: TOUR STATS ---
         st.divider()
         st.markdown("#### 🎤 Guided Tours")
         completed_tours = current_schedule.get("historical_tours", 0)
-        st.metric("Total Completed Tours", completed_tours)
+        st.metric("Completed Tours", completed_tours)
         
         progress_val = 50 if completed_tours % 2 != 0 else 0
         st.progress(progress_val, text=f"{progress_val}% to next DDJ shift credit")
         
-        # --- STATUS & AWAY DATES ---
         st.divider()
         is_active = current_schedule.get("active", True)
-        if is_active:
-            st.success("🟢 **Status:** Active in rotation")
-        else:
-            st.error("🔴 **Status:** Inactive (Excluded from shifts)")
+        if is_active: st.success("🟢 Active in rotation")
+        else: st.error("🔴 Inactive (Excluded from shifts)")
             
         away_dates = current_schedule.get("away_dates", [])
         st.markdown("#### ✈️ Upcoming Absences")
         if away_dates:
             for away in away_dates:
                 reason = away.get("reason", "Away")
-                if away['start'] == away['end']:
-                    st.write(f"• **{away['start']}** ({reason})")
-                else:
-                    st.write(f"• **{away['start']}** to **{away['end']}** ({reason})")
+                if away['start'] == away['end']: st.write(f"• **{away['start']}** ({reason})")
+                else: st.write(f"• **{away['start']}** to **{away['end']}** ({reason})")
         else:
             st.caption("*(No away dates scheduled)*")
             
-        # --- VISUAL CALENDAR ---
         published = config.get("PUBLISHED_SCHEDULE", [])
         if published:
             st.divider()
@@ -163,7 +167,6 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
             html += "</table>"
             st.markdown(html, unsafe_allow_html=True)
 
-# --- THE TABS (Now 3 Tabs) ---
 tab1, tab2, tab3 = st.tabs(["📝 My Availability", "📅 DDJ History", "🎤 Guided Tours"])
 
 # ==========================================
@@ -177,58 +180,40 @@ with tab1:
         current_schedule["AM"].insert(0, True)
         current_schedule["PM"].insert(0, True)
 
-    st.markdown("#### Typical Weekly Availability")
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Morning (8h15 - 13h)")
-        for i, day in enumerate(DAYS):
-            is_free = st.checkbox(f"{day} AM", value=current_schedule["AM"][i])
-            updated_schedule["AM"].append(is_free)
+        for i, day in enumerate(DAYS): updated_schedule["AM"].append(st.checkbox(f"{day} AM", value=current_schedule["AM"][i]))
     with col2:
         st.subheader("Afternoon (13h - 18h)")
-        for i, day in enumerate(DAYS):
-            is_free = st.checkbox(f"{day} PM", value=current_schedule["PM"][i])
-            updated_schedule["PM"].append(is_free)
+        for i, day in enumerate(DAYS): updated_schedule["PM"].append(st.checkbox(f"{day} PM", value=current_schedule["PM"][i]))
             
     st.markdown("---")
-    st.markdown("#### Specific Away Dates (Conferences, Holidays, etc.)")
+    st.markdown("#### Specific Away Dates")
     existing_away_dates = current_schedule.get("away_dates", [])
     dates_to_keep = []
-    today = datetime.date.today()
     
     if existing_away_dates:
         st.write("Uncheck a box to delete that away period:")
         for i, away_period in enumerate(existing_away_dates):
             is_past = False
             try:
-                end_date = datetime.date.fromisoformat(away_period['end'])
-                if end_date < today: is_past = True
-            except:
-                pass 
+                if datetime.date.fromisoformat(away_period['end']) < today: is_past = True
+            except: pass 
                 
             if not is_past:
                 reason = away_period.get('reason', 'Away')
-                if away_period['start'] == away_period['end']:
-                    label = f"🗓️ {away_period['start']} ({reason})"
-                else:
-                    label = f"🗓️ {away_period['start']} to {away_period['end']} ({reason})"
-                    
-                if st.checkbox(label, value=True, key=f"keep_{i}_{away_period['start']}"):
-                    dates_to_keep.append(away_period)
-    else:
-        st.caption("*(No upcoming away dates scheduled)*")
+                label = f"🗓️ {away_period['start']} ({reason})" if away_period['start'] == away_period['end'] else f"🗓️ {away_period['start']} to {away_period['end']} ({reason})"
+                if st.checkbox(label, value=True, key=f"keep_{i}_{away_period['start']}"): dates_to_keep.append(away_period)
+    else: st.caption("*(No upcoming away dates scheduled)*")
         
     updated_schedule["away_dates"] = dates_to_keep
-    
-    st.markdown("**Add a new away period:**")
     new_date_range = st.date_input("Select dates:", value=[], key="new_dates")
     new_reason = st.selectbox("Reason:", ["Conference", "Holiday", "Course/Teaching", "Other"], key="new_reason")
 
-    # --- ADMIN ZONE ---
     st.markdown("---")
     with st.expander("🛠️ Admin Dojo"):
         admin_pass = st.text_input("Admin Password:", type="password")
-        
         if admin_pass == st.secrets.get("ADMIN_PASSWORD", ""):
             st.success("Admin access granted.")
             updated_schedule["active"] = st.checkbox("🟢 Active in rotation?", value=current_schedule.get("active", True))
@@ -238,20 +223,15 @@ with tab1:
             
             st.divider()
             st.markdown("#### 🔧 TCV Operational Control")
-            st.write("Current TCV Maintenance/Off Dates:")
-            
             tcv_off = config.get("TCV_OFF_RANGES", [])
             new_tcv_off = []
             for i, period in enumerate(tcv_off):
-                if st.checkbox(f"🔴 TCV OFF: {period['start']} to {period['end']}", value=True, key=f"tcv_{i}"):
-                    new_tcv_off.append(period)
+                if st.checkbox(f"🔴 TCV OFF: {period['start']} to {period['end']}", value=True, key=f"tcv_{i}"): new_tcv_off.append(period)
             
             new_tcv_dates = st.date_input("Add TCV Maintenance Dates:", value=[], key="new_tcv")
-            if st.button("➕ Add TCV Dates to Database"):
-                if len(new_tcv_dates) == 2:
-                    new_tcv_off.append({"start": str(new_tcv_dates[0]), "end": str(new_tcv_dates[1])})
-                elif len(new_tcv_dates) == 1:
-                    new_tcv_off.append({"start": str(new_tcv_dates[0]), "end": str(new_tcv_dates[0])})
+            if st.button("➕ Add TCV Dates"):
+                if len(new_tcv_dates) == 2: new_tcv_off.append({"start": str(new_tcv_dates[0]), "end": str(new_tcv_dates[1])})
+                elif len(new_tcv_dates) == 1: new_tcv_off.append({"start": str(new_tcv_dates[0]), "end": str(new_tcv_dates[0])})
                 db["__CONFIG__"]["TCV_OFF_RANGES"] = new_tcv_off
                 save_data(db)
                 st.success("TCV Dates Updated!")
@@ -260,50 +240,22 @@ with tab1:
             db["__CONFIG__"]["TCV_OFF_RANGES"] = new_tcv_off 
             
             st.divider()
-            if st.checkbox(f"Delete {current_user}"):
-                if st.button("🗑️ Permanently Delete"):
-                    del db[current_user]
-                    save_data(db) 
-                    st.rerun()
+            if st.checkbox(f"Delete {current_user}") and st.button("🗑️ Permanently Delete"):
+                del db[current_user]
+                save_data(db) 
+                st.rerun()
         else:
-            if admin_pass != "": st.error("🥷 Nice try, Padawan.")
             updated_schedule["active"] = current_schedule.get("active", True)
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
             updated_schedule["historical_tours"] = current_schedule.get("historical_tours", 0)
 
-    # --- UPGRADED FLOATING SAVE BUTTON ---
-    st.markdown(
-        """
-        <style>
-        div.stButton > button[kind="primary"] {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 260px;
-            background-color: #28a745; 
-            color: white;
-            font-size: 18px !important;
-            height: 3em;
-            border-radius: 8px;
-            border: 2px solid #1e7e34;
-            font-weight: bold;
-            z-index: 99999; 
-            box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
-        }
-        div.stButton > button[kind="primary"]:hover {
-            background-color: #218838;
-            color: white;
-            border-color: #1e7e34;
-        }
-        </style>
-        """, unsafe_allow_html=True
-    )
+    st.markdown("""<style>div.stButton > button[kind="primary"] { position: fixed; bottom: 40px; right: 40px; width: 260px; background-color: #28a745; color: white; font-size: 18px !important; height: 3em; border-radius: 8px; border: 2px solid #1e7e34; font-weight: bold; z-index: 99999; box-shadow: 0px 4px 12px rgba(0,0,0,0.3); } div.stButton > button[kind="primary"]:hover { background-color: #218838; border-color: #1e7e34; }</style>""", unsafe_allow_html=True)
 
     if st.button("💾 SAVE MY AVAILABILITY", type="primary"):
         available_slots = sum(updated_schedule["AM"][1:]) + sum(updated_schedule["PM"][1:])
         if available_slots < 2:
-            st.error("🤨 I find it very hard to believe you are free less than twice a week. Please select at least two slots between Tuesday and Friday, or talk to a DDJ Ninja!")
+            st.error("Please select at least two slots between Tuesday and Friday.")
         else:
             if new_date_range: 
                 start_date = str(new_date_range[0])
@@ -314,107 +266,138 @@ with tab1:
             st.success("Successfully updated!")
             st.rerun()
 
-    st.markdown("---")
-    st.markdown("#### Tired of shifts?")
-    if st.button("🚫 I don't want to do DDJ shifts anymore"):
-        st.warning("### You wish... 😏")
-        st.success("...But wait, you actually can! 🎉\n\nIf you take on a **6-month DDJ Project**, you are officially excused from the standard shift rotation during that time.\n\n👉 [Click here to find more info on available DDJ Projects!](https://spcwiki.epfl.ch/wiki/DDJ/DDJ_Projects)")
-        st.balloons() 
-
 # ==========================================
 # TAB 2: HISTORY
 # ==========================================
 with tab2:
     st.header("📅 DDJ Historical Dashboard")
-    st.info("Select a past month below to view previous schedules.")
-    
     history_book = config.get("HISTORY", {})
     if history_book:
         months = list(history_book.keys())
         months.reverse() 
         selected_month = st.selectbox("View Schedule for:", months)
         st.dataframe(history_book[selected_month], use_container_width=True, hide_index=True)
-    else:
-        st.write("No historical data available yet.")
-
+    else: st.write("No historical data available yet.")
 
 # ==========================================
-# TAB 3: GUIDED TOURS (NEW)
+# TAB 3: GUIDED TOURS 
 # ==========================================
 with tab3:
     st.header("🎤 Guided Tours")
-    st.info("💡 **Rule:** Completing 2 guided tours automatically grants you +1 DDJ Shift credit.")
     
-    # --- 1. VISIT COORDINATOR PORTAL ---
+    # --- COOL STATISTICS DASHBOARD ---
+    st.subheader("📊 Tour Dashboard")
+    colA, colB, colC = st.columns(3)
+    future_tours_count = len([t for t in tours_db if not t.get("counted", False)])
+    colA.metric("Upcoming Tours", future_tours_count)
+    
+    # Calculate Leaderboard
+    guide_counts = {name: data.get("historical_tours", 0) for name, data in db.items() if name not in ["__CONFIG__", "__TOURS__"] and data.get("historical_tours", 0) > 0}
+    top_guides = sorted(guide_counts.items(), key=lambda x: x[1], reverse=True)[:3]
+    
+    if top_guides:
+        colB.metric("🏆 Top Guide", f"{top_guides[0][0]} ({top_guides[0][1]})")
+        if len(top_guides) > 1: colC.metric("🥈 2nd Place", f"{top_guides[1][0]} ({top_guides[1][1]})")
+    else:
+        colB.metric("🏆 Top Guide", "None yet")
+        colC.metric("🥈 2nd Place", "None yet")
+
+    st.divider()
+
+    # --- VISIT COORDINATOR PORTAL ---
     with st.expander("🔐 Visit Coordinator Access"):
         coord_pass = st.text_input("Coordinator Password:", type="password")
         if coord_pass == st.secrets.get("COORD_PASSWORD", ""):
             st.success("Access granted.")
-            with st.form("new_visit_form"):
-                st.subheader("Schedule a New Visit")
-                c1, c2 = st.columns(2)
-                with c1:
-                    visit_date = st.date_input("Date")
-                    visit_time = st.time_input("Time (Heure)")
-                    duration = st.text_input("Duration", value="00:45")
-                    group_name = st.text_input("Group Name")
-                    contact_info = st.text_input("Contact Email")
-                with c2:
-                    locations = st.multiselect("Locations", ["TCV", "Helios", "Bio Plasmas"])
-                    language = st.selectbox("Language", ["English", "French", "German", "Italian"])
-                    num_people = st.number_input("Number of People", min_value=1, value=4)
-                    guides_needed = st.number_input("Guides Required", min_value=1, value=1)
-                    spc_resp = st.text_input("Resp SPC")
-
-                if st.form_submit_button("➕ Add Visit"):
-                    new_tour = {
-                        "date": str(visit_date), "time": str(visit_time), "duration": duration,
-                        "group": group_name, "contact": contact_info, "locations": locations,
-                        "language": language, "people": num_people, "resp_spc": spc_resp,
-                        "guides_needed": guides_needed, "assigned_guides": [], "completed": False
-                    }
-                    if "__TOURS__" not in db: db["__TOURS__"] = []
-                    db["__TOURS__"].append(new_tour)
-                    save_data(db)
-                    st.success(f"Added visit for {group_name}!")
-                    st.rerun()
-
-    # --- 2. ADMIN TOUR VERIFICATION ---
-    with st.expander("🛠️ Admin: Verify Completed Tours"):
-        admin_pass_tours = st.text_input("Admin Password (Verify):", type="password")
-        if admin_pass_tours == st.secrets.get("ADMIN_PASSWORD", ""):
-            st.write("Mark tours as completed to grant PhDs their credits.")
-            uncompleted_tours = [t for t in tours_db if not t.get("completed", False)]
             
-            if not uncompleted_tours:
-                st.write("No pending tours to verify.")
+            # Sub-tab structure for the Coordinator
+            coord_tab1, coord_tab2, coord_tab3 = st.tabs(["📝 Add Visit", "🔔 Pending Approvals", "✉️ Call for Guides"])
             
-            for i, tour in enumerate(uncompleted_tours):
-                colA, colB = st.columns([3, 1])
-                with colA:
-                    st.write(f"**{tour['date']}** - {tour['group']} (Guides: {', '.join(tour['assigned_guides'])})")
-                with colB:
-                    if st.button("✅ Mark Completed", key=f"verify_{i}"):
-                        for guide in tour['assigned_guides']:
-                            if guide in db:
-                                db[guide]["historical_tours"] = db[guide].get("historical_tours", 0) + 1
-                                # The 2-to-1 Shift Conversion Rule
-                                if db[guide]["historical_tours"] % 2 == 0:
-                                    db[guide]["historical_shifts"] = db[guide].get("historical_shifts", 0) + 1
-                        tour['completed'] = True
-                        db["__TOURS__"] = tours_db
+            with coord_tab1:
+                with st.form("new_visit_form"):
+                    st.write("Schedule a New Visit")
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        visit_date = st.date_input("Date")
+                        visit_time = st.time_input("Time (Heure)")
+                        duration = st.text_input("Duration", value="00:45")
+                        group_name = st.text_input("Group Name")
+                        contact_info = st.text_input("Contact Email")
+                    with c2:
+                        locations = st.multiselect("Locations", ["TCV", "Helios", "Bio Plasmas"])
+                        language = st.selectbox("Language", ["English", "French", "German", "Italian", "Spanish", "Chinese"])
+                        num_people = st.number_input("Number of People", min_value=1, value=4)
+                        guides_needed = st.number_input("Guides Required", min_value=1, value=1)
+                        spc_resp = st.text_input("Resp SPC")
+
+                    if st.form_submit_button("➕ Add Visit"):
+                        new_tour = {
+                            "date": str(visit_date), "time": str(visit_time), "duration": duration,
+                            "group": group_name, "contact": contact_info, "locations": locations,
+                            "language": language, "people": num_people, "resp_spc": spc_resp,
+                            "guides_needed": guides_needed, "assigned_guides": [], "approved_guides": [], "counted": False
+                        }
+                        if "__TOURS__" not in db: db["__TOURS__"] = []
+                        db["__TOURS__"].append(new_tour)
                         save_data(db)
-                        st.success("Tour verified and credits applied!")
+                        st.success(f"Added visit for {group_name}!")
                         st.rerun()
+
+            with coord_tab2:
+                pending_found = False
+                for i, tour in enumerate(tours_db):
+                    if tour.get("assigned_guides") and not tour.get("counted", False):
+                        pending_found = True
+                        st.write(f"**{tour['date']}** - {tour['group']} (Requires {tour['guides_needed']})")
+                        for guide in tour["assigned_guides"]:
+                            pc1, pc2, pc3 = st.columns([3, 1, 1])
+                            pc1.write(f"🧑‍🏫 {guide}")
+                            if pc2.button("✅ Approve", key=f"app_{i}_{guide}"):
+                                tour["assigned_guides"].remove(guide)
+                                if "approved_guides" not in tour: tour["approved_guides"] = []
+                                tour["approved_guides"].append(guide)
+                                db["__TOURS__"] = tours_db
+                                save_data(db)
+                                st.rerun()
+                            if pc3.button("❌ Reject", key=f"rej_{i}_{guide}"):
+                                tour["assigned_guides"].remove(guide)
+                                db["__TOURS__"] = tours_db
+                                save_data(db)
+                                st.rerun()
+                if not pending_found: st.write("No pending requests.")
+                
+            with coord_tab3:
+                st.write("Generate an automatic email draft for empty tours in the next 7 days.")
+                next_week = today + datetime.timedelta(days=7)
+                empty_tours = []
+                for t in tours_db:
+                    try:
+                        t_date = datetime.date.fromisoformat(t["date"])
+                        if today <= t_date <= next_week:
+                            total_guides = len(t.get("assigned_guides", [])) + len(t.get("approved_guides", []))
+                            if total_guides < t.get("guides_needed", 1):
+                                empty_tours.append(t)
+                    except: pass
+                
+                if st.button("Generate Email Draft"):
+                    if not empty_tours: st.success("All tours for the next 7 days are fully booked!")
+                    else:
+                        subject = urllib.parse.quote("Urgent: Tour Guides Needed for Upcoming Visits")
+                        body = "Hello everyone,\n\nWe are looking for guides for the following upcoming tours:\n\n"
+                        for t in empty_tours:
+                            missing = t.get("guides_needed", 1) - (len(t.get("assigned_guides", [])) + len(t.get("approved_guides", [])))
+                            body += f"- {t['date']} at {t['time']}: {t['group']} ({missing} guides missing, Language: {t['language']})\n"
+                        body += "\nPlease book via the DDJ Portal.\n\nBest,\nVisit Coordinator"
                         
-    # --- 3. UPCOMING TOURS DASHBOARD ---
+                        mailto_link = f"mailto:crpp-ddj@groupes.epfl.ch?subject={subject}&body={urllib.parse.quote(body)}"
+                        st.markdown(f'<a href="{mailto_link}" target="_blank"><button style="background-color:#0066cc;color:white;border-radius:5px;padding:10px;border:none;cursor:pointer;">📧 Open Email Draft in Outlook/Mail</button></a>', unsafe_allow_html=True)
+                        
+    # --- UPCOMING TOURS DASHBOARD ---
     st.divider()
     st.subheader("Upcoming Visits")
+    future_tours = [t for t in tours_db if not t.get("counted", False)]
     
-    future_tours = [t for t in tours_db if not t.get("completed", False)]
-    
-    if not future_tours:
-        st.write("No upcoming tours scheduled.")
+    if not future_tours: st.write("No upcoming tours scheduled.")
     
     for i, tour in enumerate(future_tours):
         with st.container(border=True):
@@ -422,26 +405,30 @@ with tab3:
             with col1:
                 st.markdown(f"#### {tour['date']} at {tour['time']}")
                 st.write(f"**Group:** {tour['group']} ({tour['people']} people)")
-                st.write(f"**Locations:** {', '.join(tour['locations'])} | **Language:** {tour['language']}")
-                st.caption(f"SPC Resp: {tour['resp_spc']}")
+                st.write(f"**Locations:** {', '.join(tour.get('locations', []))} | **Language:** {tour.get('language', 'Unknown')}")
+                st.caption(f"SPC Resp: {tour.get('resp_spc', '')}")
             
             with col2:
                 assigned = tour.get('assigned_guides', [])
+                approved = tour.get('approved_guides', [])
                 needed = tour.get('guides_needed', 1)
-                st.write(f"**Guides:** {len(assigned)} / {needed}")
+                total_booked = len(assigned) + len(approved)
                 
-                if assigned:
-                    for guide in assigned:
-                        st.write(f"🧑‍🏫 {guide}")
+                st.write(f"**Guides:** {total_booked} / {needed}")
+                
+                for guide in approved: st.write(f"✅ **{guide}** *(Confirmed)*")
+                for guide in assigned: st.write(f"⏳ {guide} *(Pending)*")
                         
-                if current_user in assigned:
-                    if st.button("❌ Cancel Booking", key=f"cancel_{i}"):
+                if current_user in approved:
+                    st.success("You are locked in for this tour. Contact the coordinator to cancel.")
+                elif current_user in assigned:
+                    if st.button("❌ Cancel Request", key=f"cancel_{i}"):
                         tour['assigned_guides'].remove(current_user)
                         db["__TOURS__"] = tours_db
                         save_data(db)
                         st.rerun()
-                elif len(assigned) < needed:
-                    if st.button("✋ Book this Tour", key=f"book_{i}"):
+                elif total_booked < needed:
+                    if st.button("✋ Volunteer as Guide", key=f"book_{i}"):
                         tour['assigned_guides'].append(current_user)
                         db["__TOURS__"] = tours_db
                         save_data(db)
