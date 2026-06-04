@@ -10,11 +10,8 @@ API_KEY = st.secrets["API_KEY"]
 JSONBIN_URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
 
 def get_initials(name):
-    # 1. Handle the unfilled edge case (Important for the scheduler!)
     if name == "⚠️ UNFILLED - NO ONE FREE": 
         return "---"
-        
-    # 2. Manual Overrides
     custom_initials = {
         "Martino Bonisolli": "MBO",        
         "Garance Durr-Legoupil-Nicoud": "GDL",
@@ -22,53 +19,43 @@ def get_initials(name):
         "Guillaume Van Parys": "GVS",
         "Michele Bottino": "MBT",   
     }
-    
     if name in custom_initials:
         return custom_initials[name]
-        
-    # 3. Standard Logic
     parts = name.split()
-    
-    # If they have a first name and two surnames (3 or more words)
     if len(parts) >= 3:
         return (parts[0][0] + parts[1][0] + parts[2][0]).upper()
-        
-    # If they have a first name and one surname (2 words)
     elif len(parts) == 2:
         first = parts[0][0]
         last_name = parts[1]
         return (first + last_name[0] + last_name[-1]).upper()
-        
-    # Fallback for single-word names
     return name[:3].upper()
 
 def load_data():
     headers = {"X-Master-Key": API_KEY}
     try:
-        # --- NEW: timeout=5 forces the app to give up if JSONBin is frozen ---
         response = requests.get(JSONBIN_URL, headers=headers, timeout=5)
         if response.status_code == 200:
             data = response.json().get("record", {})
             if "__CONFIG__" not in data:
                 data["__CONFIG__"] = {"TCV_OFF_RANGES": [], "PUBLISHED_SCHEDULE": [], "HISTORY": {}}
+            if "__TOURS__" not in data:
+                data["__TOURS__"] = []
             return data
     except requests.exceptions.RequestException:
-        # --- NEW: If JSONBin times out or crashes, show this instead of a 504 ---
-        st.error("🚨 **CRITICAL DATABASE ERROR** 🚨\n\nThe central database is currently offline or unresponsive. Please try again later. Do not attempt to save new shifts right now.")
-        st.stop() # Immediately halts the app so it doesn't try to load blank profiles
-    
+        st.error("🚨 **CRITICAL DATABASE ERROR** 🚨\n\nThe central database is currently offline or unresponsive. Please try again later.")
+        st.stop()
     return {}
 
 def save_data(data):
     headers = {"Content-Type": "application/json", "X-Master-Key": API_KEY}
     try:
-        # --- NEW: Protect the save function from hanging too ---
         requests.put(JSONBIN_URL, json=data, headers=headers, timeout=5)
     except requests.exceptions.RequestException:
         st.error("🚨 ERROR: The database is offline. Your changes were NOT saved!")
 
 db = load_data()
 config = db.get("__CONFIG__", {"TCV_OFF_RANGES": [], "PUBLISHED_SCHEDULE": [], "HISTORY": {}})
+tours_db = db.get("__TOURS__", [])
 
 st.set_page_config(page_title="DDJ Schedule", page_icon="🇨🇭", layout="centered")
 
@@ -79,20 +66,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("SPC DDJ Portal")
+st.title("SPC DDJ Portal 3.0")
 
-phd_names = [name for name in db.keys() if name != "__CONFIG__"]
+phd_names = [name for name in db.keys() if name not in ["__CONFIG__", "__TOURS__"]]
 phd_names.sort()
 phd_names.insert(0, "--- Select your name ---")
 phd_names.insert(1, "I am a NEW PhD (Add me)") 
 
-# --- NEW: Helper function to format the dropdown names ---
 def format_dropdown(name):
     if name in ["--- Select your name ---", "I am a NEW PhD (Add me)"]:
         return name
     return f"{name} ({get_initials(name)})"
 
-# --- UPDATED SELECTBOX ---
 selected_name = st.selectbox(
     "Who are you?", 
     phd_names,
@@ -101,7 +86,7 @@ selected_name = st.selectbox(
 
 if selected_name == "I am a NEW PhD (Add me)":
     current_user = st.text_input("Enter your Full Name (and press Enter):")
-    current_schedule = {"AM": [True, True, True, True, True], "PM": [True, True, True, True, True]}
+    current_schedule = {"AM": [True]*5, "PM": [True]*5, "historical_tours": 0}
     if not current_user:
         st.stop()
 elif selected_name != "--- Select your name ---":
@@ -111,7 +96,6 @@ else:
     current_user = None
     st.stop()
 
-# --- THE SIDEBAR (Stats + New Visual Calendar) ---
 # --- THE SIDEBAR ---
 if current_user and current_user != "I am a NEW PhD (Add me)":
     with st.sidebar:
@@ -125,17 +109,23 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
         st.metric("Total Completed Shifts (since 04/2026)", shifts)
         st.metric("Fairness Ratio", f"{ratio:.2f}")
         
-        # --- NEW: STATUS & AWAY DATES ---
+        # --- NEW: TOUR STATS ---
         st.divider()
+        st.markdown("#### 🎤 Guided Tours")
+        completed_tours = current_schedule.get("historical_tours", 0)
+        st.metric("Total Completed Tours", completed_tours)
         
-        # 1. Active Status Check
+        progress_val = 50 if completed_tours % 2 != 0 else 0
+        st.progress(progress_val, text=f"{progress_val}% to next DDJ shift credit")
+        
+        # --- STATUS & AWAY DATES ---
+        st.divider()
         is_active = current_schedule.get("active", True)
         if is_active:
             st.success("🟢 **Status:** Active in rotation")
         else:
             st.error("🔴 **Status:** Inactive (Excluded from shifts)")
             
-        # 2. Upcoming Absences Check
         away_dates = current_schedule.get("away_dates", [])
         st.markdown("#### ✈️ Upcoming Absences")
         if away_dates:
@@ -149,29 +139,22 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
             st.caption("*(No away dates scheduled)*")
             
         # --- VISUAL CALENDAR ---
-        # (Keep the rest of your visual calendar code exactly as it is below this point!)
-        
-        # --- NEW: VISUAL CALENDAR ---
         published = config.get("PUBLISHED_SCHEDULE", [])
         if published:
             st.divider()
             st.markdown("### 📅 Upcoming Month")
             user_initials = get_initials(current_user)
             
-            # Build custom HTML grid
             html = "<table style='width:100%; font-size:13px; text-align:center; border-collapse: collapse;'>"
             html += "<tr style='background-color:#444; color:white;'><th>Date</th><th>AM</th><th>PM</th></tr>"
             
             for day in published:
                 bg_color = "border-bottom: 1px solid #ddd;"
-                
-                # --- THE FIX: Use .get() to default to NORMAL if "Type" is missing ---
                 day_type = day.get("Type", "NORMAL") 
                 
                 if day_type == "TCV_OFF": bg_color = "background-color: #ffcccc; color: #990000; border-bottom: 1px solid #ddd;"
                 elif day_type == "HOLIDAY": bg_color = "background-color: #cce5ff; color: #004085; border-bottom: 1px solid #ddd;"
                 
-                # Check if the user is assigned this shift
                 am_style = "background-color: #ffd700; color: black; font-weight: bold; font-size: 15px;" if user_initials != "" and user_initials == day["AM"] else ""
                 pm_style = "background-color: #ffd700; color: black; font-weight: bold; font-size: 15px;" if user_initials != "" and user_initials == day["PM"] else ""
                 
@@ -180,9 +163,12 @@ if current_user and current_user != "I am a NEW PhD (Add me)":
             html += "</table>"
             st.markdown(html, unsafe_allow_html=True)
 
-# --- THE TABS ---
-tab1, tab2 = st.tabs(["📝 My Availability", "📅 DDJ Historical Dashboard"])
+# --- THE TABS (Now 3 Tabs) ---
+tab1, tab2, tab3 = st.tabs(["📝 My Availability", "📅 DDJ History", "🎤 Guided Tours"])
 
+# ==========================================
+# TAB 1: AVAILABILITY
+# ==========================================
 with tab1:
     st.markdown(f"### Update Profile: **{current_user}**")
     updated_schedule = {"AM": [], "PM": []}
@@ -204,28 +190,22 @@ with tab1:
             is_free = st.checkbox(f"{day} PM", value=current_schedule["PM"][i])
             updated_schedule["PM"].append(is_free)
             
-    # --- AUTO-CLEANUP AWAY DATES ---
-    # --- AUTO-CLEANUP AWAY DATES ---
     st.markdown("---")
     st.markdown("#### Specific Away Dates (Conferences, Holidays, etc.)")
     existing_away_dates = current_schedule.get("away_dates", [])
     dates_to_keep = []
-
     today = datetime.date.today()
     
     if existing_away_dates:
         st.write("Uncheck a box to delete that away period:")
         for i, away_period in enumerate(existing_away_dates):
-            # Safely check if the date is in the past
             is_past = False
             try:
                 end_date = datetime.date.fromisoformat(away_period['end'])
-                if end_date < today:
-                    is_past = True
+                if end_date < today: is_past = True
             except:
-                pass # If parsing fails, assume it's valid so we don't accidentally delete it
+                pass 
                 
-            # If it's NOT in the past, draw the checkbox!
             if not is_past:
                 reason = away_period.get('reason', 'Away')
                 if away_period['start'] == away_period['end']:
@@ -233,7 +213,6 @@ with tab1:
                 else:
                     label = f"🗓️ {away_period['start']} to {away_period['end']} ({reason})"
                     
-                # The checkbox defaults to True. If they uncheck it, it gets removed.
                 if st.checkbox(label, value=True, key=f"keep_{i}_{away_period['start']}"):
                     dates_to_keep.append(away_period)
     else:
@@ -250,11 +229,12 @@ with tab1:
     with st.expander("🛠️ Admin Dojo"):
         admin_pass = st.text_input("Admin Password:", type="password")
         
-        if admin_pass == st.secrets["ADMIN_PASSWORD"]:
+        if admin_pass == st.secrets.get("ADMIN_PASSWORD", ""):
             st.success("Admin access granted.")
             updated_schedule["active"] = st.checkbox("🟢 Active in rotation?", value=current_schedule.get("active", True))
             updated_schedule["historical_shifts"] = st.number_input("Total Shifts:", value=current_schedule.get("historical_shifts", 0), step=1)
             updated_schedule["active_months"] = st.number_input("Total Months:", value=current_schedule.get("active_months", 1), step=1)
+            updated_schedule["historical_tours"] = st.number_input("Total Tours Completed:", value=current_schedule.get("historical_tours", 0), step=1)
             
             st.divider()
             st.markdown("#### 🔧 TCV Operational Control")
@@ -286,13 +266,13 @@ with tab1:
                     save_data(db) 
                     st.rerun()
         else:
-            if admin_pass != "":
-                st.error("🥷 Nice try, Padawan. The Admin Dojo is sealed to outsiders. Seek the true password or return to your shifts.")
+            if admin_pass != "": st.error("🥷 Nice try, Padawan.")
             updated_schedule["active"] = current_schedule.get("active", True)
             updated_schedule["historical_shifts"] = current_schedule.get("historical_shifts", 0)
             updated_schedule["active_months"] = current_schedule.get("active_months", 1) 
+            updated_schedule["historical_tours"] = current_schedule.get("historical_tours", 0)
 
-# --- UPGRADED FLOATING SAVE BUTTON ---
+    # --- UPGRADED FLOATING SAVE BUTTON ---
     st.markdown(
         """
         <style>
@@ -308,8 +288,8 @@ with tab1:
             border-radius: 8px;
             border: 2px solid #1e7e34;
             font-weight: bold;
-            z-index: 99999; /* Forces the button to stay on top of everything */
-            box-shadow: 0px 4px 12px rgba(0,0,0,0.3); /* Adds a drop shadow so it looks like it's floating */
+            z-index: 99999; 
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
         }
         div.stButton > button[kind="primary"]:hover {
             background-color: #218838;
@@ -317,26 +297,18 @@ with tab1:
             border-color: #1e7e34;
         }
         </style>
-        """, 
-        unsafe_allow_html=True
+        """, unsafe_allow_html=True
     )
 
-    # 5. Save Button with Validation!
-    # Removed use_container_width=True so it doesn't stretch across the entire screen
     if st.button("💾 SAVE MY AVAILABILITY", type="primary"):
-        # --- NEW: LAZINESS CHECKER ---
-        # Count how many True values there are from Tuesday (index 1) to Friday
         available_slots = sum(updated_schedule["AM"][1:]) + sum(updated_schedule["PM"][1:])
-        
         if available_slots < 2:
             st.error("🤨 I find it very hard to believe you are free less than twice a week. Please select at least two slots between Tuesday and Friday, or talk to a DDJ Ninja!")
         else:
-            # If they passed the test, save the data normally!
             if new_date_range: 
                 start_date = str(new_date_range[0])
                 end_date = str(new_date_range[1] if len(new_date_range) > 1 else new_date_range[0])
                 updated_schedule["away_dates"].append({"start": start_date, "end": end_date, "reason": new_reason})   
-                
             db[current_user] = updated_schedule
             save_data(db) 
             st.success("Successfully updated!")
@@ -344,31 +316,135 @@ with tab1:
 
     st.markdown("---")
     st.markdown("#### Tired of shifts?")
-    
-    # We use a slightly different button style for emphasis
     if st.button("🚫 I don't want to do DDJ shifts anymore"):
         st.warning("### You wish... 😏")
-        st.success("""
-        ...But wait, you actually can! 🎉
-        
-        If you take on a **6-month DDJ Project**, you are officially excused from the standard shift rotation during that time. 
-        
-        👉 [Click here to find more info on available DDJ Projects!](https://spcwiki.epfl.ch/wiki/DDJ/DDJ_Projects)
-        """)
-        st.balloons() # Streamlit will literally drop animated balloons on their screen!
+        st.success("...But wait, you actually can! 🎉\n\nIf you take on a **6-month DDJ Project**, you are officially excused from the standard shift rotation during that time.\n\n👉 [Click here to find more info on available DDJ Projects!](https://spcwiki.epfl.ch/wiki/DDJ/DDJ_Projects)")
+        st.balloons() 
 
-# --- NEW: HISTORY DASHBOARD TAB ---
+# ==========================================
+# TAB 2: HISTORY
+# ==========================================
 with tab2:
     st.header("📅 DDJ Historical Dashboard")
     st.info("Select a past month below to view previous schedules.")
     
     history_book = config.get("HISTORY", {})
     if history_book:
-        # Sort history so the newest months appear first
         months = list(history_book.keys())
         months.reverse() 
         selected_month = st.selectbox("View Schedule for:", months)
-        
         st.dataframe(history_book[selected_month], use_container_width=True, hide_index=True)
     else:
-        st.write("No historical data available yet. Next time the admin hits 'Save', the schedule will appear here!")
+        st.write("No historical data available yet.")
+
+
+# ==========================================
+# TAB 3: GUIDED TOURS (NEW)
+# ==========================================
+with tab3:
+    st.header("🎤 Guided Tours")
+    st.info("💡 **Rule:** Completing 2 guided tours automatically grants you +1 DDJ Shift credit.")
+    
+    # --- 1. VISIT COORDINATOR PORTAL ---
+    with st.expander("🔐 Visit Coordinator Access"):
+        coord_pass = st.text_input("Coordinator Password:", type="password")
+        if coord_pass == st.secrets.get("COORD_PASSWORD", ""):
+            st.success("Access granted.")
+            with st.form("new_visit_form"):
+                st.subheader("Schedule a New Visit")
+                c1, c2 = st.columns(2)
+                with c1:
+                    visit_date = st.date_input("Date")
+                    visit_time = st.time_input("Time (Heure)")
+                    duration = st.text_input("Duration", value="00:45")
+                    group_name = st.text_input("Group Name")
+                    contact_info = st.text_input("Contact Email")
+                with c2:
+                    locations = st.multiselect("Locations", ["TCV", "Helios", "Bio Plasmas"])
+                    language = st.selectbox("Language", ["English", "French", "German", "Italian"])
+                    num_people = st.number_input("Number of People", min_value=1, value=4)
+                    guides_needed = st.number_input("Guides Required", min_value=1, value=1)
+                    spc_resp = st.text_input("Resp SPC")
+
+                if st.form_submit_button("➕ Add Visit"):
+                    new_tour = {
+                        "date": str(visit_date), "time": str(visit_time), "duration": duration,
+                        "group": group_name, "contact": contact_info, "locations": locations,
+                        "language": language, "people": num_people, "resp_spc": spc_resp,
+                        "guides_needed": guides_needed, "assigned_guides": [], "completed": False
+                    }
+                    if "__TOURS__" not in db: db["__TOURS__"] = []
+                    db["__TOURS__"].append(new_tour)
+                    save_data(db)
+                    st.success(f"Added visit for {group_name}!")
+                    st.rerun()
+
+    # --- 2. ADMIN TOUR VERIFICATION ---
+    with st.expander("🛠️ Admin: Verify Completed Tours"):
+        admin_pass_tours = st.text_input("Admin Password (Verify):", type="password")
+        if admin_pass_tours == st.secrets.get("ADMIN_PASSWORD", ""):
+            st.write("Mark tours as completed to grant PhDs their credits.")
+            uncompleted_tours = [t for t in tours_db if not t.get("completed", False)]
+            
+            if not uncompleted_tours:
+                st.write("No pending tours to verify.")
+            
+            for i, tour in enumerate(uncompleted_tours):
+                colA, colB = st.columns([3, 1])
+                with colA:
+                    st.write(f"**{tour['date']}** - {tour['group']} (Guides: {', '.join(tour['assigned_guides'])})")
+                with colB:
+                    if st.button("✅ Mark Completed", key=f"verify_{i}"):
+                        for guide in tour['assigned_guides']:
+                            if guide in db:
+                                db[guide]["historical_tours"] = db[guide].get("historical_tours", 0) + 1
+                                # The 2-to-1 Shift Conversion Rule
+                                if db[guide]["historical_tours"] % 2 == 0:
+                                    db[guide]["historical_shifts"] = db[guide].get("historical_shifts", 0) + 1
+                        tour['completed'] = True
+                        db["__TOURS__"] = tours_db
+                        save_data(db)
+                        st.success("Tour verified and credits applied!")
+                        st.rerun()
+                        
+    # --- 3. UPCOMING TOURS DASHBOARD ---
+    st.divider()
+    st.subheader("Upcoming Visits")
+    
+    future_tours = [t for t in tours_db if not t.get("completed", False)]
+    
+    if not future_tours:
+        st.write("No upcoming tours scheduled.")
+    
+    for i, tour in enumerate(future_tours):
+        with st.container(border=True):
+            col1, col2 = st.columns([2, 1])
+            with col1:
+                st.markdown(f"#### {tour['date']} at {tour['time']}")
+                st.write(f"**Group:** {tour['group']} ({tour['people']} people)")
+                st.write(f"**Locations:** {', '.join(tour['locations'])} | **Language:** {tour['language']}")
+                st.caption(f"SPC Resp: {tour['resp_spc']}")
+            
+            with col2:
+                assigned = tour.get('assigned_guides', [])
+                needed = tour.get('guides_needed', 1)
+                st.write(f"**Guides:** {len(assigned)} / {needed}")
+                
+                if assigned:
+                    for guide in assigned:
+                        st.write(f"🧑‍🏫 {guide}")
+                        
+                if current_user in assigned:
+                    if st.button("❌ Cancel Booking", key=f"cancel_{i}"):
+                        tour['assigned_guides'].remove(current_user)
+                        db["__TOURS__"] = tours_db
+                        save_data(db)
+                        st.rerun()
+                elif len(assigned) < needed:
+                    if st.button("✋ Book this Tour", key=f"book_{i}"):
+                        tour['assigned_guides'].append(current_user)
+                        db["__TOURS__"] = tours_db
+                        save_data(db)
+                        st.rerun()
+                else:
+                    st.success("Tour is fully booked!")
