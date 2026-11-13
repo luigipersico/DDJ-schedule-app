@@ -1,0 +1,2022 @@
+{
+  "Kenneth Lee": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Martim Zurita": {
+    "AM": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1,
+    "away_dates": []
+  },
+  "Erol Balkovic": {
+    "AM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-07-29",
+        "end": "2026-07-31",
+        "reason": "Holiday"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Samuel Ernst": {
+    "AM": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1,
+    "away_dates": []
+  },
+  "Marta Pedrini": {
+    "AM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 2
+  },
+  "Vincent Masson": {
+    "AM": [
+      false,
+      false,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      false,
+      false,
+      true,
+      false,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-07-06",
+        "end": "2026-07-17",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-08-17",
+        "end": "2026-08-30",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-06-28",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Yinghan Wang": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      true,
+      false
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Haomin Sun": {
+    "AM": [
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      false,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Garance Durr-Legoupil-Nicoud": {
+    "AM": [
+      true,
+      false,
+      false,
+      true,
+      false
+    ],
+    "PM": [
+      false,
+      false,
+      true,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-11",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-11",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-11",
+        "end": "2026-07-18",
+        "reason": "Holiday"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 1,
+    "active_months": 3
+  },
+  "Cosmas Heiss": {
+    "AM": [
+      true,
+      false,
+      true,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-05-11",
+        "end": "2026-05-15",
+        "reason": "Other"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1
+  },
+  "Guillaume Van Parys": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Cristina Venturini": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-05-21",
+        "end": "2026-05-22",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-05-25",
+        "end": "2026-05-29",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-08-03",
+        "end": "2026-08-07",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-06-19",
+        "end": "2026-06-25",
+        "reason": "Conference"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Lili Edes": {
+    "AM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-29",
+        "end": "2026-06-30",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-07-01",
+        "end": "2026-07-15",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-27",
+        "end": "2026-08-16",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-27",
+        "end": "2026-08-16",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Ewout Devlaminck": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-28",
+        "end": "2026-07-04",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-07-05",
+        "end": "2026-08-02",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Zeno Tecchiolli": {
+    "AM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      false,
+      false,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-22",
+        "end": "2026-06-30",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-07-13",
+        "end": "2026-07-31",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-08-01",
+        "end": "2026-08-09",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Richard Ducker": {
+    "AM": [
+      true,
+      false,
+      false,
+      true,
+      false
+    ],
+    "PM": [
+      false,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-08-21",
+        "end": "2026-09-04",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Pierrick Giroud-Garampon": {
+    "AM": [
+      true,
+      true,
+      false,
+      true,
+      false
+    ],
+    "PM": [
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-07-06",
+        "end": "2026-07-10",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Nicole Vadot": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-09-21",
+        "end": "2026-09-25",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-11-04",
+        "end": "2026-11-05",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-27",
+        "end": "2026-08-30",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-17",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-20",
+        "end": "2026-07-24",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Chizhou Wang": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-22",
+        "end": "2026-07-03",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-07-06",
+        "end": "2026-07-28",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-06",
+        "end": "2026-07-28",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Salomon Guinchard": {
+    "AM": [
+      false,
+      false,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 1,
+    "active_months": 3
+  },
+  "Benjamin Brown": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-05-04",
+        "end": "2026-05-08",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-05-11",
+        "end": "2026-05-15",
+        "reason": "Other"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 1,
+    "active_months": 2
+  },
+  "Jean-Pierre Svantner": {
+    "AM": [
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-04-30",
+        "end": "2026-04-30",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-08-31",
+        "end": "2026-09-05",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-05-11",
+        "end": "2026-05-15",
+        "reason": "Other"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 1,
+    "active_months": 2
+  },
+  "Riccardo Morgan": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-05-16",
+        "end": "2026-05-22",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-05-16",
+        "end": "2026-05-22",
+        "reason": "Conference"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 4
+  },
+  "Sergio García Herreros": {
+    "AM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-23",
+        "end": "2026-07-02",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-02",
+        "end": "2026-07-10",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-08-14",
+        "end": "2026-09-02",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Alysée Khan": {
+    "AM": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      false,
+      false,
+      true,
+      true
+    ],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1,
+    "away_dates": []
+  },
+  "Martino Bonisolli": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-07-20",
+        "end": "2026-08-04",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-20",
+        "end": "2026-08-04",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "James Tumbokon": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      false,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-07-05",
+        "end": "2026-07-11",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Oraz Anuaruly": {
+    "AM": [
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1
+  },
+  "Hugo Chkroun": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      false,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-07-01",
+        "end": "2026-07-31",
+        "reason": "Other"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 2,
+    "active_months": 5
+  },
+  "Isabel Muzio": {
+    "AM": [
+      false,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-14",
+        "end": "2026-06-19",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-05-17",
+        "end": "2026-05-29",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Haoran Zhang": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-22",
+        "end": "2026-07-05",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-07-06",
+        "end": "2026-08-04",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Luigi Persico": {
+    "AM": [
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1
+  },
+  "Giuseppe Drago": {
+    "AM": [
+      true,
+      false,
+      true,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-22",
+        "end": "2026-06-26",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Conference"
+      },
+      {
+        "start": "2026-06-22",
+        "end": "2026-06-26",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-07-06",
+        "end": "2026-07-24",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 5
+  },
+  "Pierre Louis Sintre": {
+    "AM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [],
+    "active": false,
+    "historical_shifts": 0,
+    "active_months": 1
+  },
+  "Ludovic Rais": {
+    "AM": [
+      true,
+      false,
+      true,
+      true,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-05-25",
+        "end": "2026-05-29",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-05-25",
+        "end": "2026-05-29",
+        "reason": "Other"
+      }
+    ],
+    "active": false,
+    "historical_shifts": 2,
+    "active_months": 3
+  },
+  "Peizheng Zhang": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-07-05",
+        "end": "2026-07-31",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Inès Vergara": {
+    "AM": [
+      true,
+      true,
+      true,
+      false,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-08-01",
+        "end": "2026-08-15",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-08-24",
+        "end": "2026-08-28",
+        "reason": "Conference"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Quentin Kernel": {
+    "AM": [
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      false,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-24",
+        "end": "2026-06-24",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-07-13",
+        "end": "2026-07-14",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-20",
+        "end": "2026-07-31",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-03",
+        "end": "2026-07-03",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-08",
+        "end": "2026-07-08",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-07-09",
+        "end": "2026-07-09",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-07-09",
+        "end": "2026-07-09",
+        "reason": "Other"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Daniel Perales Rios": {
+    "AM": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "PM": [
+      false,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-11",
+        "end": "2026-06-12",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "__CONFIG__": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-03-30",
+        "end": "2026-03-31",
+        "reason": "Conference"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 0,
+    "active_months": 1,
+    "TCV_OFF_RANGES": [
+      {
+        "start": "2026-05-15",
+        "end": "2026-05-15"
+      },
+      {
+        "start": "2026-06-02",
+        "end": "2026-06-02"
+      },
+      {
+        "start": "2026-07-13",
+        "end": "2026-08-28"
+      }
+    ],
+    "HISTORY": {
+      "April 2026": [
+        {
+          "Date": "Wed, Apr 01",
+          "AM": "MPI",
+          "PM": "YWG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Apr 02",
+          "AM": "EDK",
+          "PM": "KLE",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Apr 03",
+          "AM": "🏖️ HOLIDAY",
+          "PM": "🏖️ HOLIDAY",
+          "Type": "HOLIDAY"
+        },
+        {
+          "Date": "Mon, Apr 06",
+          "AM": "🏖️ HOLIDAY",
+          "PM": "🏖️ HOLIDAY",
+          "Type": "HOLIDAY"
+        },
+        {
+          "Date": "Tue, Apr 07",
+          "AM": "ZTI",
+          "PM": "HZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Apr 08",
+          "AM": "EBC",
+          "PM": "RDR",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Apr 09",
+          "AM": "LRS",
+          "PM": "GDO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Apr 10",
+          "AM": "QKL",
+          "PM": "CWG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Apr 14",
+          "AM": "SGH",
+          "PM": "MBO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Apr 15",
+          "AM": "IVA",
+          "PM": "JTN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Apr 16",
+          "AM": "DPR",
+          "PM": "JSR",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Apr 17",
+          "AM": "SGD",
+          "PM": "NVT",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Apr 21",
+          "AM": "GVP",
+          "PM": "BBN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Apr 22",
+          "AM": "IMO",
+          "PM": "PZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Apr 23",
+          "AM": "GDL",
+          "PM": "CVI",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Apr 24",
+          "AM": "LES",
+          "PM": "HCN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Apr 28",
+          "AM": "PGN",
+          "PM": "HSN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Apr 29",
+          "AM": "VMN",
+          "PM": "RDR",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Apr 30",
+          "AM": "MPI",
+          "PM": "EDK",
+          "Type": "NORMAL"
+        }
+      ],
+      "May 2026": [
+        {
+          "Date": "Fri, May 01",
+          "AM": "VBV",
+          "PM": "GVS",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, May 05",
+          "AM": "RMN",
+          "PM": "MBT",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, May 06",
+          "AM": "JJF",
+          "PM": "SBA",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, May 07",
+          "AM": "IMO",
+          "PM": "PGN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, May 08",
+          "AM": "LES",
+          "PM": "ZTI",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, May 12",
+          "AM": "OMA",
+          "PM": "CWG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, May 13",
+          "AM": "HCN",
+          "PM": "YWG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, May 14",
+          "AM": "🏖️ HOLIDAY",
+          "PM": "🏖️ HOLIDAY",
+          "Type": "HOLIDAY"
+        },
+        {
+          "Date": "Fri, May 15",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Tue, May 19",
+          "AM": "DPR",
+          "PM": "CVI",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, May 20",
+          "AM": "EBC",
+          "PM": "VMN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, May 21",
+          "AM": "LRS",
+          "PM": "HZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, May 22",
+          "AM": "MBO",
+          "PM": "SGD",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Mon, May 25",
+          "AM": "🏖️ HOLIDAY",
+          "PM": "🏖️ HOLIDAY",
+          "Type": "HOLIDAY"
+        },
+        {
+          "Date": "Tue, May 26",
+          "AM": "OMA",
+          "PM": "IVA",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, May 27",
+          "AM": "EDK",
+          "PM": "KLE",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, May 28",
+          "AM": "JTN",
+          "PM": "NVT",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, May 29",
+          "AM": "QKL",
+          "PM": "HSN",
+          "Type": "NORMAL"
+        }
+      ],
+      "June 2026": [
+        {
+          "Date": "Mon, Jun 01",
+          "AM": "ZTI",
+          "PM": "LES",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Jun 02",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Wed, Jun 03",
+          "AM": "SGS",
+          "PM": "PZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Jun 04",
+          "AM": "RMN",
+          "PM": "GDO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Jun 05",
+          "AM": "SBA",
+          "PM": "MBO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Jun 09",
+          "AM": "VBV",
+          "PM": "JJF",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Jun 10",
+          "AM": "CWG",
+          "PM": "JTN",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Jun 11",
+          "AM": "MBT",
+          "PM": "IMO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Jun 12",
+          "AM": "QKL",
+          "PM": "EDK",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Jun 16",
+          "AM": "ZTI",
+          "PM": "IVA",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Jun 17",
+          "AM": "LES",
+          "PM": "GDO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Jun 18",
+          "AM": "PGN",
+          "PM": "HZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Jun 19",
+          "AM": "SGS",
+          "PM": "PZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Jun 23",
+          "AM": "VBV",
+          "PM": "NVT",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Jun 24",
+          "AM": "OMA",
+          "PM": "MBO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Jun 25",
+          "AM": "RDR",
+          "PM": "DPR",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Jun 26",
+          "AM": "EDK",
+          "PM": "JJF",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Jun 30",
+          "AM": "RMN",
+          "PM": "IMO",
+          "Type": "NORMAL"
+        }
+      ],
+      "July 2026": [
+        {
+          "Date": "Wed, Jul 01",
+          "AM": "ZTI",
+          "PM": "SBA",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Jul 02",
+          "AM": "RDR",
+          "PM": "DPR",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Jul 03",
+          "AM": "OMA",
+          "PM": "PZG",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Tue, Jul 07",
+          "AM": "PDE",
+          "PM": "PDZ",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Wed, Jul 08",
+          "AM": "MBT",
+          "PM": "MBO",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Thu, Jul 09",
+          "AM": "RMN",
+          "PM": "IVA",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Fri, Jul 10",
+          "AM": "QKL",
+          "PM": "VBV",
+          "Type": "NORMAL"
+        },
+        {
+          "Date": "Mon, Jul 13",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Tue, Jul 14",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Wed, Jul 15",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Thu, Jul 16",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Fri, Jul 17",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Mon, Jul 20",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Tue, Jul 21",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Wed, Jul 22",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Thu, Jul 23",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Fri, Jul 24",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Mon, Jul 27",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Tue, Jul 28",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Wed, Jul 29",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Thu, Jul 30",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        },
+        {
+          "Date": "Fri, Jul 31",
+          "AM": "🔧 TCV OFF",
+          "PM": "🔧 TCV OFF",
+          "Type": "TCV_OFF"
+        }
+      ]
+    },
+    "PUBLISHED_SCHEDULE": [
+      {
+        "Date": "Wed, Jul 01",
+        "AM": "ZTI",
+        "PM": "SBA",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Thu, Jul 02",
+        "AM": "RDR",
+        "PM": "DPR",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Fri, Jul 03",
+        "AM": "OMA",
+        "PM": "PZG",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Tue, Jul 07",
+        "AM": "PDE",
+        "PM": "PDZ",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Wed, Jul 08",
+        "AM": "MBT",
+        "PM": "MBO",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Thu, Jul 09",
+        "AM": "RMN",
+        "PM": "IVA",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Fri, Jul 10",
+        "AM": "QKL",
+        "PM": "VBV",
+        "Type": "NORMAL"
+      },
+      {
+        "Date": "Mon, Jul 13",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Tue, Jul 14",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Wed, Jul 15",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Thu, Jul 16",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Fri, Jul 17",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Mon, Jul 20",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Tue, Jul 21",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Wed, Jul 22",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Thu, Jul 23",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Fri, Jul 24",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Mon, Jul 27",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Tue, Jul 28",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Wed, Jul 29",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Thu, Jul 30",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      },
+      {
+        "Date": "Fri, Jul 31",
+        "AM": "🔧 TCV OFF",
+        "PM": "🔧 TCV OFF",
+        "Type": "TCV_OFF"
+      }
+    ]
+  },
+  "Oliver Moura": {
+    "AM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-26",
+        "end": "2026-06-26",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-07-27",
+        "end": "2026-08-10",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-02",
+        "end": "2026-07-02",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-07-10",
+        "end": "2026-07-10",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-07-24",
+        "end": "2026-07-24",
+        "reason": "Other"
+      },
+      {
+        "start": "2026-07-24",
+        "end": "2026-07-24",
+        "reason": "Other"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 5
+  },
+  "Michele Bottino": {
+    "AM": [
+      false,
+      false,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      false,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-22",
+        "end": "2026-06-30",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-06-29",
+        "end": "2026-07-03",
+        "reason": "Course/Teaching"
+      },
+      {
+        "start": "2026-07-10",
+        "end": "2026-07-14",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 4
+  },
+  "Viacheslav Bochkarev": {
+    "AM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-02",
+        "end": "2026-06-02",
+        "reason": "Course/Teaching"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 4,
+    "active_months": 4
+  },
+  "Jan Jakub Frybes": {
+    "AM": [
+      false,
+      true,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      false,
+      true,
+      false,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-07-15",
+        "end": "2026-07-17",
+        "reason": "Other"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 4
+  },
+  "Simone Barreca": {
+    "AM": [
+      false,
+      false,
+      true,
+      false,
+      true
+    ],
+    "PM": [
+      false,
+      true,
+      true,
+      false,
+      false
+    ],
+    "away_dates": [],
+    "active": true,
+    "historical_shifts": 3,
+    "active_months": 4
+  },
+  "__TOURS__": [],
+  "__GUEST_GUIDES__": {},
+  "Paul Devianne": {
+    "AM": [
+      false,
+      true,
+      true,
+      true,
+      false
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "away_dates": [
+      {
+        "start": "2026-08-23",
+        "end": "2026-09-07",
+        "reason": "Holiday"
+      },
+      {
+        "start": "2026-07-01",
+        "end": "2026-07-02",
+        "reason": "Conference"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 1,
+    "active_months": 2
+  },
+  "Pablo Diaz": {
+    "AM": [
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    "PM": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "away_dates": [
+      {
+        "start": "2026-06-26",
+        "end": "2026-07-05",
+        "reason": "Holiday"
+      }
+    ],
+    "active": true,
+    "historical_shifts": 1,
+    "active_months": 2
+  }
+}
